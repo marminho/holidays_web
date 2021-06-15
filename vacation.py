@@ -48,4 +48,5 @@ if st.button('Confirm choice'):
 	data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
 	#data.to_excel(st.secrets['drive_loc'])
 	#data.to_excel(url_correct)
+	data.to_excel('holiday.xls')
 	data
