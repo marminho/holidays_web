@@ -1,4 +1,4 @@
-python -m pip install streamlit as st
-python -m pip install pandas as pd
+python -m pip install streamlit
+python -m pip install pandas
 python -m pip install datetime
 python -m pip install requests
