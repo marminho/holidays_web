@@ -4,7 +4,7 @@ import pandas as pd
 import datetime
 import requests
 
-url_correct = 'https://drive.google.com/uc?id=' + st.secrets['url'].split('/')[-2]
+#url_correct = 'https://drive.google.com/uc?id=' + st.secrets['url'].split('/')[-2]
 categories = ['Nocleg', 'Bilety', 'Transport', 'Rozrywka', 'Jedzenie']
 
 def get_exchange(currency: str) -> float:
@@ -19,7 +19,8 @@ st.text('Holiday Tracker')
 
 #data = pd.read_excel('st.secrets['drive_loc'])
 
-data = pd.read_excel(url_correct)
+data = pd.read_excel('holiday.xls')
+#data = pd.read_excel(url_correct)
 data = data[['Name', 'Category', 'Currency', 'Price']]
 data['Price Conv'] = [x if y == 'PLN' else x * ratePLN for x,y in zip(data['Price'], data['Currency'])]
 
