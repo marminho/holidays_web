@@ -21,6 +21,13 @@ def read_dropbox(dbx, file):
            df = pd.read_excel(stream, index_col=0)
     return df
 
+def upload_dropbox(dbx, df):
+	with io.BytesIO() as stream:
+		with pd.ExcelWriter(stream) as writer:
+			df.to_excel(writer)
+			writer.save()
+		stream.seek(0)
+		dbx.files_upload(stream.getvalue(), '/holiday.xls', mode= dropbox.files.WriteMode.overwrite)
 
 ratePLN = get_exchange('PLN')
 
@@ -48,5 +55,6 @@ else:
 if st.button('Confirm choice'):
 
 	data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
-	dbx.files_upload(data.to_excel('holiday.xls'), '/holiday,xls', mode = dropbox.files.WriteMode.overwrite)
+	#dbx.files_upload(data.to_excel('holiday.xls'), '/holiday,xls', mode = dropbox.files.WriteMode.overwrite)
+	upload_dropbox(dbx, data)
 	data
