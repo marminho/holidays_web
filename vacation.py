@@ -55,7 +55,7 @@ else:
 
 if st.button('Confirm choice'):
 	if cost_name in list(data['Name'].values):
-		data.drop(index = data.index[data['Name'] == cost_name])
+		data = data.drop(index = data.index[data['Name'] == cost_name])
 	data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Paid?' : cost_paid, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
 	upload_dropbox(dbx, data, file)
 	data
