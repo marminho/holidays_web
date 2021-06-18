@@ -56,20 +56,23 @@ total_unpaid
 
 st.bar_chart(cat_split, width = 800, use_container_width= False)
 
-cost_name = st.text_input('Input next cost name')
-cost_category = st.selectbox('Select Category', categories)
-cost_currency = st.selectbox('Select Currency', ['PLN', 'EUR'])
-cost_value = st.text_input('Input Cost')
-cost_paid = st.selectbox('Is it paid already?', ['Yes', 'No'])
 
-if cost_category == 'EUR':
-	cost_conv = cost_value * ratePLN
-else:
-	cost_conv = cost_value
+with st.form('Inputs'):
 
-if st.button('Confirm choice'):
-	if cost_name in list(data['Name'].values):
-		data = data.drop(index = data.index[data['Name'] == cost_name])
-	data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Paid?' : cost_paid, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
-	upload_dropbox(dbx, data, file)
-	data
+	cost_name = st.text_input('Input next cost name')
+	cost_category = st.selectbox('Select Category', categories)
+	cost_currency = st.selectbox('Select Currency', ['PLN', 'EUR'])
+	cost_value = st.text_input('Input Cost')
+	cost_paid = st.selectbox('Is it paid already?', ['Yes', 'No'])
+
+	if cost_category == 'EUR':
+		cost_conv = cost_value * ratePLN
+	else:
+		cost_conv = cost_value
+
+	if st.form_submit_button('Confirm choice'):
+		if cost_name in list(data['Name'].values):
+			data = data.drop(index = data.index[data['Name'] == cost_name])
+		data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Paid?' : cost_paid, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
+		upload_dropbox(dbx, data, file)
+		data
