@@ -30,7 +30,11 @@ def upload_dropbox(dbx, df, file):
 		dbx.files_upload(stream.getvalue(), file, mode= dropbox.files.WriteMode.overwrite)
 
 ratePLN = get_exchange('PLN')
-data = read_dropbox(dbx, file)
+
+st.text('Holiday Tracker')
+if st.button('Refresh Data'):
+	data = read_dropbox(dbx, file)
+
 data = data[columns]
 data['Price Conv'] = [x if y == 'PLN' else x * ratePLN for x,y in zip(data['Price'], data['Currency'])]
 total = data['Price Conv'].sum()
@@ -41,7 +45,6 @@ total_paid = total_paid['Price Conv'].sum()
 total_unpaid = data[data['Paid?'] == 'No']
 total_unpaid = total_unpaid['Price Conv'].sum()
 
-st.text('Holiday Tracker')
 data
 st.text('Total Amount so far:')
 total
