@@ -29,7 +29,8 @@ def upload_dropbox(dbx, df, file):
 		stream.seek(0)
 		dbx.files_upload(stream.getvalue(), file, mode= dropbox.files.WriteMode.overwrite)
 
-ratePLN = get_exchange('PLN')
+#ratePLN = get_exchange('PLN')
+ratePLN = 4.55
 data = read_dropbox(dbx, file)
 
 data = data[columns]
