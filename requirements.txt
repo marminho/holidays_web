@@ -5,4 +5,3 @@ requests
 xlrd
 xlwt
 dropbox
-io
