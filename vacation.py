@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import datetime
@@ -6,11 +5,11 @@ import requests
 import dropbox
 import io
 import openpyxl
+
 categories = ['Nocleg', 'Bilety', 'Transport', 'Rozrywka', 'Jedzenie']
 dbx = dropbox.Dropbox(st.secrets['dropbox_token'])
 file = '/holiday.xls'
-
-
+columns = ['Name', 'Category', 'Currency', 'Paid?', 'Price']
 def get_exchange(currency: str) -> float:
 	response = requests.get(st.secrets['exchange_respone'])
 	response = response.json()
@@ -22,18 +21,17 @@ def read_dropbox(dbx, file):
            df = pd.read_excel(stream, index_col=0)
     return df
 
-def upload_dropbox(dbx, df):
+def upload_dropbox(dbx, df, file):
 	with io.BytesIO() as stream:
 		with pd.ExcelWriter(stream) as writer:
 			df.to_excel(writer)
 			writer.save()
 		stream.seek(0)
-		dbx.files_upload(stream.getvalue(), '/holiday.xls', mode= dropbox.files.WriteMode.overwrite)
+		dbx.files_upload(stream.getvalue(), file, mode= dropbox.files.WriteMode.overwrite)
 
 ratePLN = get_exchange('PLN')
-
 data = read_dropbox(dbx, file)
-data = data[['Name', 'Category', 'Currency', 'Price']]
+data = data[columns]
 data['Price Conv'] = [x if y == 'PLN' else x * ratePLN for x,y in zip(data['Price'], data['Currency'])]
 total = data['Price Conv'].sum()
 cat_split = data.groupby(['Category'])['Price Conv'].sum()
@@ -48,14 +46,16 @@ cost_name = st.text_input('Input next cost name')
 cost_category = st.selectbox('Select Category', categories)
 cost_currency = st.selectbox('Select Currency', ['PLN', 'EUR'])
 cost_value = st.text_input('Input Cost')
+cost_paid = st.selectbox('Is it paid already?', ['Yes', 'No'])
 
 if cost_category == 'EUR':
 	cost_conv = cost_value * ratePLN
 else:
 	cost_conv = cost_value
-if st.button('Confirm choice'):
 
-	data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
-	#dbx.files_upload(data.to_excel('holiday.xls'), '/holiday,xls', mode = dropbox.files.WriteMode.overwrite)
-	upload_dropbox(dbx, data)
+if st.button('Confirm choice'):
+	if cost_name in list(data['Name'].values):
+		data.drop(index = data.index[data['Name'] == cost_name])
+	data = data.append({'Name' : cost_name, 'Category' : cost_category, 'Currency' : cost_currency, 'Paid?' : cost_paid, 'Price' : cost_value, 'Price Conv' : cost_conv}, ignore_index= True)
+	upload_dropbox(dbx, data, file)
 	data
