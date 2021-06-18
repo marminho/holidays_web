@@ -5,6 +5,7 @@ import datetime
 import requests
 import dropbox
 import io
+import openpyxl
 categories = ['Nocleg', 'Bilety', 'Transport', 'Rozrywka', 'Jedzenie']
 dbx = dropbox.Dropbox(st.secrets['dropbox_token'])
 file = '/holiday.xls'
