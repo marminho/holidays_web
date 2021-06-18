@@ -35,11 +35,22 @@ data = data[columns]
 data['Price Conv'] = [x if y == 'PLN' else x * ratePLN for x,y in zip(data['Price'], data['Currency'])]
 total = data['Price Conv'].sum()
 cat_split = data.groupby(['Category'])['Price Conv'].sum()
+total_paid = data[data['Paid?'] == 'Yes']
+total_paid = total_paid['Price Conv'].sum()
+
+total_unpaid = data[data['Paid?'] == 'No']
+total_unpaid = total_unpaid['Price Conv'].sum()
 
 st.text('Holiday Tracker')
 data
 st.text('Total Amount so far:')
 total
+
+st.text('Total Paid Amount so far:')
+total_paid
+st.text('Total Unpaid Amount so far:')
+total_unpaid
+
 st.bar_chart(cat_split, width = 800, use_container_width= False)
 
 cost_name = st.text_input('Input next cost name')
