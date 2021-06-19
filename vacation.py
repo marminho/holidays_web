@@ -44,6 +44,7 @@ total_unpaid = data[data['Paid?'] == 'No']
 total_unpaid = total_unpaid['Price Conv'].sum()
 
 st.text('Holiday Tracker')
+st.button('Refresh')
 data
 st.text('Total Amount so far:')
 total
